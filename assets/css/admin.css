@@ -1,0 +1,228 @@
+.chatbot-form {
+    max-width: 800px;
+    margin-top: 20px;
+    background: #fff;
+    padding: 25px;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    border-radius: 4px;
+}
+
+.chatbot-form .form-table {
+    margin-top: 0;
+}
+
+.chatbot-form .form-table th {
+    width: 200px;
+    padding: 20px 10px 20px 0;
+    font-weight: 600;
+}
+
+.chatbot-form .form-table td {
+    padding: 20px 10px;
+}
+
+.chatbot-form input[type="text"],
+.chatbot-form input[type="password"],
+.chatbot-form textarea {
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.chatbot-form input[type="text"]:focus,
+.chatbot-form input[type="password"]:focus,
+.chatbot-form textarea:focus,
+.chatbot-form select:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
+}
+
+.chatbot-form select {
+    min-width: 300px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.chatbot-form .description {
+    margin-top: 8px;
+    color: #646970;
+    font-size: 13px;
+    font-style: italic;
+}
+
+/* Page Selection Area Styles */
+.page-selection {
+    margin: 0;
+    padding: 0;
+    display: none; /* Hidden by default */
+}
+
+.page-selection td {
+    padding-top: 0 !important;
+}
+
+.page-selection.show,
+.page-selection[style=""] { /* When style attribute is empty (display:none is removed) */
+    display: table-row !important; /* Force table-row display */
+}
+
+/* Select Field Container */
+.select2-container {
+    min-width: 300px !important;
+    max-width: 500px !important;
+    width: 100% !important;
+    margin-top: 10px;
+}
+
+/* Multiple Select Styling */
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    min-height: 35px;
+    width: 100%;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    padding: 2px 8px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #f0f0f1;
+    border: 1px solid #8c8f94;
+    border-radius: 3px;
+    padding: 4px 8px;
+    margin: 4px 4px 0 0;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    margin-right: 5px;
+    color: #2271b1;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+    margin-top: 3px;
+}
+
+/* Dropdown Styling */
+.select2-dropdown {
+    border-color: #8c8f94;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #2271b1;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: #f0f0f1;
+}
+
+/* Submit Button Area Styles */
+.chatbot-form .submit {
+    padding: 15px 0 0 0;
+    margin: 20px 0 0 0;
+    border-top: 1px solid #dcdcde;
+}
+
+.chatbot-form .submit .button {
+    margin-right: 10px;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 782px) {
+    .chatbot-form .form-table th {
+        width: 100%;
+        display: block;
+        padding-bottom: 0;
+    }
+    
+    .chatbot-form .form-table td {
+        padding-top: 10px;
+        padding-bottom: 20px;
+    }
+    
+    .chatbot-form input[type="text"],
+    .chatbot-form input[type="password"],
+    .chatbot-form textarea,
+    .select2-container {
+        width: 100% !important;
+        max-width: none !important;
+    }
+}
+
+/* Table styles */
+.wp-list-table .column-actions {
+    width: 120px;
+}
+
+.wp-list-table .button-link-delete {
+    color: #d63638;
+    margin-left: 8px;
+}
+
+.wp-list-table .button-link-delete:hover {
+    color: #d63638;
+    text-decoration: underline;
+}
+
+/* Table Layout Styles */
+.wp-list-table {
+    table-layout: fixed;
+}
+
+.wp-list-table th,
+.wp-list-table td {
+    padding: 8px 10px;
+    vertical-align: middle;
+}
+
+/* Column Width Adjustments */
+.wp-list-table th.column-name,
+.wp-list-table td.column-name {
+    width: 20%;
+}
+
+.wp-list-table th.column-chatbot-id,
+.wp-list-table td.column-chatbot-id {
+    width: 15%;
+}
+
+.wp-list-table th.column-private-key,
+.wp-list-table td.column-private-key {
+    width: 15%;
+}
+
+.wp-list-table th.column-location,
+.wp-list-table td.column-location {
+    width: 20%;
+}
+
+.wp-list-table th.column-note,
+.wp-list-table td.column-note {
+    width: 15%;
+}
+
+.wp-list-table th.column-actions,
+.wp-list-table td.column-actions {
+    width: 10%;
+}
+
+.wp-list-table th.column-status,
+.wp-list-table td.column-status {
+    width: 5%;
+    text-align: center;
+}
+
+/* Status Toggle Column Styling */
+.wp-list-table td.column-status {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+/* Action Buttons Spacing */
+.wp-list-table .button-small {
+    margin: 2px;
+}
