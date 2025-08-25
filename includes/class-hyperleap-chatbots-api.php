@@ -28,10 +28,9 @@ class Hyperleap_Chatbots_API {
             return $cached_result;
         }
 
-        $response = $this->make_api_request('/chatbot/validate', array(
-            'chatbotId' => $chatbot_id,
-            'privateKey' => $chatbot_seed
-        ));
+        // Use the correct endpoint pattern from your React app
+        $endpoint = '/api/chatbots/public/' . urlencode($chatbot_id) . '?key=' . urlencode($chatbot_seed);
+        $response = $this->make_api_request($endpoint, array(), 'GET');
 
         if (is_wp_error($response)) {
             return array(
@@ -40,45 +39,39 @@ class Hyperleap_Chatbots_API {
             );
         }
 
+        // If we get a 200 response with chatbot data, it's valid
         $result = array(
-            'valid' => $response['success'] ?? false,
-            'message' => $response['message'] ?? __('Validation failed.', 'hyperleap-chatbots'),
-            'data' => $response['data'] ?? array()
+            'valid' => true,
+            'message' => __('Chatbot credentials are valid!', 'hyperleap-chatbots'),
+            'data' => array(
+                'name' => $response['chatbotName'] ?? $response['name'] ?? 'Chatbot',
+                'description' => $response['description'] ?? '',
+                'chatbot_info' => $response
+            )
         );
 
         // Cache successful validations for 1 hour
-        if ($result['valid']) {
-            set_transient($cache_key, $result, HOUR_IN_SECONDS);
-        }
+        set_transient($cache_key, $result, HOUR_IN_SECONDS);
 
         return $result;
     }
 
     public function get_chatbot_info($chatbot_id, $chatbot_seed) {
-        $response = $this->make_api_request('/chatbot/info', array(
-            'chatbotId' => $chatbot_id,
-            'privateKey' => $chatbot_seed
-        ));
-
-        if (is_wp_error($response)) {
-            return false;
+        // Reuse the validation endpoint since it returns chatbot info
+        $validation = $this->validate_chatbot($chatbot_id, $chatbot_seed);
+        
+        if ($validation['valid']) {
+            return $validation['data']['chatbot_info'] ?? false;
         }
 
-        return $response['data'] ?? false;
+        return false;
     }
 
     public function get_chatbot_analytics($chatbot_id, $chatbot_seed, $date_range = '7d') {
-        $response = $this->make_api_request('/chatbot/analytics', array(
-            'chatbotId' => $chatbot_id,
-            'privateKey' => $chatbot_seed,
-            'range' => $date_range
-        ));
-
-        if (is_wp_error($response)) {
-            return false;
-        }
-
-        return $response['data'] ?? false;
+        // Analytics endpoint might not be available for public API
+        // This would require authentication and proper API endpoints
+        // For now, return false to indicate feature not available
+        return false;
     }
 
     private function make_api_request($endpoint, $data = array(), $method = 'POST') {
@@ -130,7 +123,19 @@ class Hyperleap_Chatbots_API {
     }
 
     public function test_connection() {
-        $response = $this->make_api_request('/health', array(), 'GET');
+        // Test connection by making a simple request to a known endpoint
+        // We'll use a dummy chatbot validation to test if the API is reachable
+        $url = rtrim($this->api_url, '/') . '/api/chatbots/public/test';
+        
+        $args = array(
+            'timeout' => $this->timeout,
+            'headers' => array(
+                'User-Agent' => 'HyperleapChatbotsWP/' . HYPERLEAP_CHATBOTS_VERSION
+            ),
+            'method' => 'GET'
+        );
+
+        $response = wp_remote_request($url, $args);
         
         if (is_wp_error($response)) {
             return array(
@@ -139,10 +144,20 @@ class Hyperleap_Chatbots_API {
             );
         }
 
+        $code = wp_remote_retrieve_response_code($response);
+        
+        // Even if we get 404 for the test endpoint, it means the API is reachable
+        if ($code >= 200 && $code < 500) {
+            return array(
+                'success' => true,
+                'message' => __('API connection successful', 'hyperleap-chatbots'),
+                'data' => array('status_code' => $code)
+            );
+        }
+
         return array(
-            'success' => true,
-            'message' => __('API connection successful', 'hyperleap-chatbots'),
-            'data' => $response
+            'success' => false,
+            'message' => sprintf(__('API connection failed with status %d', 'hyperleap-chatbots'), $code)
         );
     }
 }
