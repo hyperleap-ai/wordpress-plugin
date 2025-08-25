@@ -1,214 +1,271 @@
 <?php
+/**
+ * Enhanced chatbot list with modern UI
+ */
+
 if (!defined('WPINC')) {
     die;
 }
 ?>
-<div class="wrap">
-    <h1 class="wp-heading-inline">AI Chatbots</h1>
-    <a href="<?php echo admin_url('admin.php?page=website-chatbots-new'); ?>" class="page-title-action">Add New</a>
-    <hr class="wp-header-end">
 
-    <table class="wp-list-table widefat fixed striped">
-        <thead>
-            <tr>
-                <th class="column-name">Chatbot Name</th>
-                <th class="column-chatbot-id">Chatbot ID</th>
-                <th class="column-private-key">Private Key</th>
-                <th class="column-location">Location</th>
-                <th class="column-note">Note</th>
-                <th class="column-actions">Actions</th>
-                <th class="column-status">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $chatbots = get_option('website_chatbots_data', array());
-            if (empty($chatbots)) {
-                echo '<tr><td colspan="7">No chatbots found. <a href="' . admin_url('admin.php?page=website-chatbots-new') . '">Add your first chatbot</a>.</td></tr>';
-            } else {
-                foreach ($chatbots as $chatbot) {
-                    $edit_url = add_query_arg(
-                        array(
-                            'page' => 'website-chatbots',
-                            'action' => 'edit',
-                            'id' => $chatbot['id']
-                        ),
-                        admin_url('admin.php')
-                    );
-                    $is_active = isset($chatbot['status']) && $chatbot['status'] === 'active';
-                    ?>
-                    <tr>
-                        <td class="column-name"><?php echo esc_html(isset($chatbot['chatbot_name']) ? $chatbot['chatbot_name'] : 'N/A'); ?></td>
-                        <td class="column-chatbot-id"><?php echo esc_html($chatbot['chatbot_id']); ?></td>
-                        <td class="column-private-key"><?php echo esc_html(substr($chatbot['private_key'], 0, 10) . '...'); ?></td>
-                        <td class="column-location"><?php 
-                            echo esc_html($chatbot['location'] === 'sitewide' ? 'Sitewide' : 'Specific Pages');
-                            if ($chatbot['location'] === 'specific' && !empty($chatbot['pages'])) {
-                                $page_titles = array();
-                                foreach ($chatbot['pages'] as $page_id) {
-                                    $page_titles[] = get_the_title($page_id);
-                                }
-                                echo '<br><small>' . esc_html(implode(', ', $page_titles)) . '</small>';
-                            }
-                        ?></td>
-                        <td class="column-note"><?php echo esc_html($chatbot['note']); ?></td>
-                        <td class="column-actions">
-                            <a href="<?php echo esc_url($edit_url); ?>" class="button button-small">Edit</a>
-                            <button type="button" class="button button-small button-link-delete delete-chatbot" data-id="<?php echo esc_attr($chatbot['id']); ?>">Delete</button>
-                        </td>
-                        <td class="column-status">
-                            <label class="switch">
-                                <input type="checkbox" 
-                                       class="status-toggle" 
-                                       data-id="<?php echo esc_attr($chatbot['id']); ?>"
-                                       <?php checked($is_active); ?>>
-                                <span class="slider round"></span>
-                            </label>
-                        </td>
-                    </tr>
-                    <?php
-                }
-            }
+<div class="wrap hyperleap-admin">
+    <div class="hyperleap-header">
+        <h1 class="hyperleap-title">
+            <svg class="hyperleap-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            </svg>
+            <?php _e('AI Chatbots', 'hyperleap-chatbots'); ?>
+        </h1>
+        
+        <div class="hyperleap-header-actions">
+            <a href="<?php echo admin_url('admin.php?page=hyperleap-chatbots-install'); ?>" 
+               class="hyperleap-btn hyperleap-btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14m-7-7h14"/>
+                </svg>
+                <?php _e('Quick Install', 'hyperleap-chatbots'); ?>
+            </a>
+            <a href="<?php echo admin_url('admin.php?page=hyperleap-chatbots&action=new'); ?>" 
+               class="hyperleap-btn hyperleap-btn-secondary">
+                <?php _e('Advanced Setup', 'hyperleap-chatbots'); ?>
+            </a>
+        </div>
+    </div>
+
+    <?php if (empty($chatbots)): ?>
+        <div class="hyperleap-empty-state">
+            <div class="hyperleap-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+            </div>
+            <h2><?php _e('No chatbots yet', 'hyperleap-chatbots'); ?></h2>
+            <p><?php _e('Get started by installing your first AI chatbot in under 60 seconds.', 'hyperleap-chatbots'); ?></p>
+            <div class="hyperleap-empty-actions">
+                <a href="<?php echo admin_url('admin.php?page=hyperleap-chatbots-install'); ?>" 
+                   class="hyperleap-btn hyperleap-btn-primary hyperleap-btn-large">
+                    <?php _e('Quick Install Chatbot', 'hyperleap-chatbots'); ?>
+                </a>
+                <a href="https://hyperleap.ai/docs" target="_blank" 
+                   class="hyperleap-btn hyperleap-btn-ghost">
+                    <?php _e('View Documentation', 'hyperleap-chatbots'); ?>
+                </a>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="hyperleap-stats">
+            <?php 
+            $active_count = count(array_filter($chatbots, function($bot) { return $bot['enabled']; }));
+            $total_count = count($chatbots);
             ?>
-        </tbody>
-    </table>
+            <div class="hyperleap-stat">
+                <div class="hyperleap-stat-value"><?php echo $active_count; ?></div>
+                <div class="hyperleap-stat-label"><?php _e('Active', 'hyperleap-chatbots'); ?></div>
+            </div>
+            <div class="hyperleap-stat">
+                <div class="hyperleap-stat-value"><?php echo $total_count; ?></div>
+                <div class="hyperleap-stat-label"><?php _e('Total', 'hyperleap-chatbots'); ?></div>
+            </div>
+        </div>
+
+        <div class="hyperleap-chatbots-grid">
+            <?php foreach ($chatbots as $chatbot): ?>
+                <div class="hyperleap-chatbot-card <?php echo $chatbot['enabled'] ? 'active' : 'inactive'; ?>" 
+                     data-chatbot-id="<?php echo esc_attr($chatbot['id']); ?>">
+                    
+                    <div class="hyperleap-chatbot-header">
+                        <div class="hyperleap-chatbot-status">
+                            <div class="hyperleap-status-indicator <?php echo $chatbot['enabled'] ? 'active' : 'inactive'; ?>"></div>
+                            <span class="hyperleap-status-text">
+                                <?php echo $chatbot['enabled'] ? __('Active', 'hyperleap-chatbots') : __('Inactive', 'hyperleap-chatbots'); ?>
+                            </span>
+                        </div>
+                        
+                        <div class="hyperleap-chatbot-actions">
+                            <button class="hyperleap-btn-icon hyperleap-toggle-chatbot" 
+                                    data-id="<?php echo esc_attr($chatbot['id']); ?>"
+                                    data-enabled="<?php echo $chatbot['enabled'] ? 'true' : 'false'; ?>"
+                                    title="<?php echo $chatbot['enabled'] ? __('Disable', 'hyperleap-chatbots') : __('Enable', 'hyperleap-chatbots'); ?>">
+                                <?php if ($chatbot['enabled']): ?>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="6" y="4" width="4" height="16"/>
+                                        <rect x="14" y="4" width="4" height="16"/>
+                                    </svg>
+                                <?php else: ?>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="5,3 19,12 5,21"/>
+                                    </svg>
+                                <?php endif; ?>
+                            </button>
+                            
+                            <a href="<?php echo admin_url('admin.php?page=hyperleap-chatbots&action=edit&id=' . urlencode($chatbot['id'])); ?>" 
+                               class="hyperleap-btn-icon" title="<?php _e('Edit', 'hyperleap-chatbots'); ?>">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 20h9"/>
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                                </svg>
+                            </a>
+                            
+                            <button class="hyperleap-btn-icon hyperleap-delete-chatbot" 
+                                    data-id="<?php echo esc_attr($chatbot['id']); ?>"
+                                    title="<?php _e('Delete', 'hyperleap-chatbots'); ?>">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3,6 5,6 21,6"/>
+                                    <path d="M19,6V20a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+                                    <line x1="10" y1="11" x2="10" y2="17"/>
+                                    <line x1="14" y1="11" x2="14" y2="17"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="hyperleap-chatbot-content">
+                        <h3 class="hyperleap-chatbot-name"><?php echo esc_html($chatbot['name'] ?: __('Unnamed Chatbot', 'hyperleap-chatbots')); ?></h3>
+                        <div class="hyperleap-chatbot-id"><?php echo esc_html($chatbot['chatbot_id']); ?></div>
+                        
+                        <div class="hyperleap-chatbot-placement">
+                            <span class="hyperleap-placement-badge hyperleap-placement-<?php echo esc_attr($chatbot['placement']); ?>">
+                                <?php
+                                switch ($chatbot['placement']) {
+                                    case 'sitewide':
+                                        _e('Site-wide', 'hyperleap-chatbots');
+                                        break;
+                                    case 'specific':
+                                        printf(_n('%d page', '%d pages', count($chatbot['pages']), 'hyperleap-chatbots'), count($chatbot['pages']));
+                                        break;
+                                    case 'homepage':
+                                        _e('Homepage only', 'hyperleap-chatbots');
+                                        break;
+                                    default:
+                                        echo esc_html($chatbot['placement']);
+                                }
+                                ?>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="hyperleap-chatbot-footer">
+                        <div class="hyperleap-chatbot-dates">
+                            <small><?php printf(__('Updated %s', 'hyperleap-chatbots'), 
+                                human_time_diff(strtotime($chatbot['updated_at']), current_time('timestamp')) . ' ' . __('ago', 'hyperleap-chatbots')); ?></small>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </div>
 
-<style>
-/* Toggle Switch Styles */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-}
-
-input:checked + .slider {
-    background-color: #2271b1;
-}
-
-input:focus + .slider {
-    box-shadow: 0 0 1px #2271b1;
-}
-
-input:checked + .slider:before {
-    transform: translateX(26px);
-}
-
-.slider.round {
-    border-radius: 24px;
-}
-
-.slider.round:before {
-    border-radius: 50%;
-}
-
-/* Table column width adjustments */
-.wp-list-table th:first-child,
-.wp-list-table td:first-child {
-    width: 80px;
-    text-align: center;
-}
-</style>
-
-<script>
+<script type="text/javascript">
 jQuery(document).ready(function($) {
-    $('.delete-chatbot').on('click', function() {
-        if (!confirm('Are you sure you want to delete this chatbot?')) {
-            return;
-        }
+    
+    $('.hyperleap-toggle-chatbot').on('click', function() {
+        const button = $(this);
+        const chatbotId = button.data('id');
+        const currentEnabled = button.data('enabled') === 'true';
+        const newEnabled = !currentEnabled;
         
-        var button = $(this);
-        var id = button.data('id');
+        button.prop('disabled', true);
         
         $.ajax({
-            url: ajaxurl,
+            url: hyperleapChatbots.ajaxurl,
             type: 'POST',
             data: {
-                action: 'delete_chatbot',
-                id: id,
-                nonce: websiteChatbotsAdmin.nonce
-            },
-            success: function(response) {
-                if (response.success) {
-                    button.closest('tr').fadeOut(400, function() {
-                        $(this).remove();
-                        if ($('tbody tr').length === 0) {
-                            location.reload();
-                        }
-                    });
-                } else {
-                    alert('Error deleting chatbot');
-                }
-            }
-        });
-    });
-
-    // Status toggle handler
-    $('.status-toggle').on('change', function() {
-        var checkbox = $(this);
-        var chatbotId = checkbox.data('id');
-
-        // Disable all checkboxes during the update
-        $('.status-toggle').prop('disabled', true);
-
-        $.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'update_chatbot_status',
+                action: 'hyperleap_toggle_chatbot',
+                nonce: hyperleapChatbots.nonce,
                 id: chatbotId,
-                status: checkbox.prop('checked') ? 'active' : 'inactive',
-                nonce: websiteChatbotsAdmin.nonce
+                enabled: newEnabled
             },
             success: function(response) {
                 if (response.success) {
-                    // Uncheck all other checkboxes
-                    $('.status-toggle').not(checkbox).prop('checked', false);
+                    // Update UI
+                    const card = button.closest('.hyperleap-chatbot-card');
+                    const statusIndicator = card.find('.hyperleap-status-indicator');
+                    const statusText = card.find('.hyperleap-status-text');
+                    
+                    if (newEnabled) {
+                        card.removeClass('inactive').addClass('active');
+                        statusIndicator.removeClass('inactive').addClass('active');
+                        statusText.text('<?php _e('Active', 'hyperleap-chatbots'); ?>');
+                        button.attr('title', '<?php _e('Disable', 'hyperleap-chatbots'); ?>');
+                        button.html('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>');
+                    } else {
+                        card.removeClass('active').addClass('inactive');
+                        statusIndicator.removeClass('active').addClass('inactive');
+                        statusText.text('<?php _e('Inactive', 'hyperleap-chatbots'); ?>');
+                        button.attr('title', '<?php _e('Enable', 'hyperleap-chatbots'); ?>');
+                        button.html('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>');
+                    }
+                    
+                    button.data('enabled', newEnabled);
+                    
+                    // Show success message
+                    showNotice('success', response.data.message);
                 } else {
-                    // Revert the change if there was an error
-                    checkbox.prop('checked', !checkbox.prop('checked'));
-                    alert('Error updating chatbot status');
+                    showNotice('error', response.data);
                 }
             },
             error: function() {
-                // Revert the change on error
-                checkbox.prop('checked', !checkbox.prop('checked'));
-                alert('Error updating chatbot status');
+                showNotice('error', '<?php _e('Failed to update chatbot status', 'hyperleap-chatbots'); ?>');
             },
             complete: function() {
-                // Re-enable all checkboxes
-                $('.status-toggle').prop('disabled', false);
+                button.prop('disabled', false);
             }
         });
     });
+    
+    $('.hyperleap-delete-chatbot').on('click', function() {
+        const button = $(this);
+        const chatbotId = button.data('id');
+        const card = button.closest('.hyperleap-chatbot-card');
+        const chatbotName = card.find('.hyperleap-chatbot-name').text();
+        
+        if (!confirm('<?php _e('Are you sure you want to delete', 'hyperleap-chatbots'); ?> "' + chatbotName + '"?')) {
+            return;
+        }
+        
+        button.prop('disabled', true);
+        
+        $.ajax({
+            url: hyperleapChatbots.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'hyperleap_delete_chatbot',
+                nonce: hyperleapChatbots.nonce,
+                id: chatbotId
+            },
+            success: function(response) {
+                if (response.success) {
+                    card.fadeOut(300, function() {
+                        $(this).remove();
+                        
+                        // Check if no chatbots left
+                        if ($('.hyperleap-chatbot-card').length === 0) {
+                            location.reload();
+                        }
+                    });
+                    
+                    showNotice('success', response.data);
+                } else {
+                    showNotice('error', response.data);
+                }
+            },
+            error: function() {
+                showNotice('error', '<?php _e('Failed to delete chatbot', 'hyperleap-chatbots'); ?>');
+            },
+            complete: function() {
+                button.prop('disabled', false);
+            }
+        });
+    });
+    
+    function showNotice(type, message) {
+        const notice = $('<div class="notice notice-' + type + ' is-dismissible"><p>' + message + '</p></div>');
+        $('.hyperleap-header').after(notice);
+        
+        setTimeout(function() {
+            notice.fadeOut();
+        }, 5000);
+    }
 });
 </script>

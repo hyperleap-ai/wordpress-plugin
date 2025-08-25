@@ -1,0 +1,577 @@
+/**
+ * Modern Admin Styles for Hyperleap Chatbots Plugin
+ * Enhanced UI with smooth animations and professional design
+ */
+
+:root {
+    --hyperleap-primary: #2563eb;
+    --hyperleap-primary-hover: #1d4ed8;
+    --hyperleap-secondary: #64748b;
+    --hyperleap-success: #10b981;
+    --hyperleap-warning: #f59e0b;
+    --hyperleap-error: #ef4444;
+    --hyperleap-bg: #f8fafc;
+    --hyperleap-surface: #ffffff;
+    --hyperleap-border: #e2e8f0;
+    --hyperleap-text: #334155;
+    --hyperleap-text-secondary: #64748b;
+    --hyperleap-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --hyperleap-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --hyperleap-radius: 0.5rem;
+    --hyperleap-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Admin Styles */
+.hyperleap-admin {
+    background: var(--hyperleap-bg);
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.hyperleap-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Header Styles */
+.hyperleap-header {
+    background: var(--hyperleap-surface);
+    border-bottom: 1px solid var(--hyperleap-border);
+    padding: 2rem 1rem;
+    margin: 0 -20px 2rem -20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.hyperleap-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--hyperleap-text);
+    margin: 0;
+}
+
+.hyperleap-subtitle {
+    color: var(--hyperleap-text-secondary);
+    font-size: 1rem;
+    margin: 0.5rem 0 0 0;
+}
+
+.hyperleap-icon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--hyperleap-primary);
+}
+
+.hyperleap-header-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Button Styles */
+.hyperleap-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--hyperleap-radius);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--hyperleap-transition);
+    white-space: nowrap;
+}
+
+.hyperleap-btn:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.hyperleap-btn:active {
+    transform: translateY(0);
+}
+
+.hyperleap-btn-primary {
+    background: var(--hyperleap-primary);
+    color: white;
+    box-shadow: var(--hyperleap-shadow);
+}
+
+.hyperleap-btn-primary:hover {
+    background: var(--hyperleap-primary-hover);
+    color: white;
+}
+
+.hyperleap-btn-secondary {
+    background: var(--hyperleap-surface);
+    color: var(--hyperleap-text);
+    border: 1px solid var(--hyperleap-border);
+}
+
+.hyperleap-btn-secondary:hover {
+    background: var(--hyperleap-bg);
+    color: var(--hyperleap-text);
+}
+
+.hyperleap-btn-ghost {
+    background: transparent;
+    color: var(--hyperleap-text-secondary);
+}
+
+.hyperleap-btn-ghost:hover {
+    background: var(--hyperleap-bg);
+    color: var(--hyperleap-text);
+}
+
+.hyperleap-btn-large {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+}
+
+.hyperleap-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--hyperleap-radius);
+    cursor: pointer;
+    transition: var(--hyperleap-transition);
+    color: var(--hyperleap-text-secondary);
+}
+
+.hyperleap-btn-icon:hover {
+    background: var(--hyperleap-bg);
+    color: var(--hyperleap-text);
+}
+
+/* Card Styles */
+.hyperleap-card {
+    background: var(--hyperleap-surface);
+    border: 1px solid var(--hyperleap-border);
+    border-radius: var(--hyperleap-radius);
+    box-shadow: var(--hyperleap-shadow);
+    overflow: hidden;
+    transition: var(--hyperleap-transition);
+}
+
+.hyperleap-card:hover {
+    box-shadow: var(--hyperleap-shadow-lg);
+}
+
+.hyperleap-card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--hyperleap-border);
+}
+
+.hyperleap-card-header h2,
+.hyperleap-card-header h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--hyperleap-text);
+}
+
+.hyperleap-card-header p {
+    margin: 0;
+    color: var(--hyperleap-text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Form Styles */
+.hyperleap-form {
+    padding: 1.5rem;
+}
+
+.hyperleap-form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.hyperleap-form-group {
+    flex: 1;
+}
+
+.hyperleap-label {
+    display: block;
+    font-weight: 500;
+    color: var(--hyperleap-text);
+    margin-bottom: 0.5rem;
+}
+
+.hyperleap-input,
+.hyperleap-textarea,
+.hyperleap-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--hyperleap-border);
+    border-radius: var(--hyperleap-radius);
+    font-size: 0.875rem;
+    transition: var(--hyperleap-transition);
+    background: var(--hyperleap-surface);
+}
+
+.hyperleap-input:focus,
+.hyperleap-textarea:focus,
+.hyperleap-select:focus {
+    outline: none;
+    border-color: var(--hyperleap-primary);
+    box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+}
+
+.hyperleap-field-hint {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--hyperleap-text-secondary);
+}
+
+.required {
+    color: var(--hyperleap-error);
+}
+
+.hyperleap-form-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--hyperleap-border);
+}
+
+/* Alert Styles */
+.hyperleap-alert {
+    padding: 1rem;
+    border-radius: var(--hyperleap-radius);
+    margin: 1rem 0;
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+}
+
+.hyperleap-alert-success {
+    background: rgb(16 185 129 / 0.1);
+    border: 1px solid rgb(16 185 129 / 0.2);
+    color: #065f46;
+}
+
+.hyperleap-alert-error {
+    background: rgb(239 68 68 / 0.1);
+    border: 1px solid rgb(239 68 68 / 0.2);
+    color: #991b1b;
+}
+
+.hyperleap-alert-warning {
+    background: rgb(245 158 11 / 0.1);
+    border: 1px solid rgb(245 158 11 / 0.2);
+    color: #92400e;
+}
+
+/* Empty State */
+.hyperleap-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--hyperleap-surface);
+    border-radius: var(--hyperleap-radius);
+    border: 1px solid var(--hyperleap-border);
+}
+
+.hyperleap-empty-icon {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1.5rem;
+    color: var(--hyperleap-text-secondary);
+}
+
+.hyperleap-empty-state h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--hyperleap-text);
+    margin: 0 0 0.5rem 0;
+}
+
+.hyperleap-empty-state p {
+    color: var(--hyperleap-text-secondary);
+    margin: 0 0 2rem 0;
+}
+
+.hyperleap-empty-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Stats */
+.hyperleap-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.hyperleap-stat {
+    background: var(--hyperleap-surface);
+    border: 1px solid var(--hyperleap-border);
+    border-radius: var(--hyperleap-radius);
+    padding: 1.5rem;
+    flex: 1;
+    text-align: center;
+    min-width: 120px;
+}
+
+.hyperleap-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--hyperleap-primary);
+    margin-bottom: 0.25rem;
+}
+
+.hyperleap-stat-label {
+    font-size: 0.875rem;
+    color: var(--hyperleap-text-secondary);
+    font-weight: 500;
+}
+
+/* Chatbot Grid */
+.hyperleap-chatbots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.hyperleap-chatbot-card {
+    background: var(--hyperleap-surface);
+    border: 1px solid var(--hyperleap-border);
+    border-radius: var(--hyperleap-radius);
+    overflow: hidden;
+    transition: var(--hyperleap-transition);
+}
+
+.hyperleap-chatbot-card:hover {
+    box-shadow: var(--hyperleap-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.hyperleap-chatbot-card.active {
+    border-color: var(--hyperleap-success);
+}
+
+.hyperleap-chatbot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--hyperleap-bg);
+    border-bottom: 1px solid var(--hyperleap-border);
+}
+
+.hyperleap-chatbot-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hyperleap-status-indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--hyperleap-secondary);
+}
+
+.hyperleap-status-indicator.active {
+    background: var(--hyperleap-success);
+}
+
+.hyperleap-status-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--hyperleap-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.hyperleap-chatbot-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.hyperleap-chatbot-content {
+    padding: 1rem;
+}
+
+.hyperleap-chatbot-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--hyperleap-text);
+    margin: 0 0 0.5rem 0;
+}
+
+.hyperleap-chatbot-id {
+    font-size: 0.75rem;
+    color: var(--hyperleap-text-secondary);
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+    background: var(--hyperleap-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+}
+
+.hyperleap-chatbot-placement {
+    margin-top: 0.75rem;
+}
+
+.hyperleap-placement-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 0.25rem;
+    background: var(--hyperleap-bg);
+    color: var(--hyperleap-text-secondary);
+    border: 1px solid var(--hyperleap-border);
+}
+
+.hyperleap-placement-sitewide {
+    background: rgb(16 185 129 / 0.1);
+    color: #065f46;
+    border-color: rgb(16 185 129 / 0.2);
+}
+
+.hyperleap-placement-specific {
+    background: rgb(59 130 246 / 0.1);
+    color: #1e40af;
+    border-color: rgb(59 130 246 / 0.2);
+}
+
+.hyperleap-chatbot-footer {
+    padding: 1rem;
+    background: var(--hyperleap-bg);
+    border-top: 1px solid var(--hyperleap-border);
+}
+
+.hyperleap-chatbot-dates {
+    font-size: 0.75rem;
+    color: var(--hyperleap-text-secondary);
+}
+
+/* Quick Install Specific Styles */
+.hyperleap-quick-install {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.hyperleap-help-card {
+    max-width: 500px;
+    margin: 2rem auto 0;
+}
+
+.hyperleap-help-content {
+    padding: 1.5rem;
+}
+
+.hyperleap-help-item {
+    margin-bottom: 1.5rem;
+}
+
+.hyperleap-help-item:last-child {
+    margin-bottom: 0;
+}
+
+.hyperleap-help-item h4 {
+    font-weight: 600;
+    color: var(--hyperleap-text);
+    margin: 0 0 0.5rem 0;
+}
+
+.hyperleap-help-item p {
+    color: var(--hyperleap-text-secondary);
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.hyperleap-help-actions {
+    padding: 1.5rem;
+    border-top: 1px solid var(--hyperleap-border);
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Spinner Animation */
+.hyperleap-spinner {
+    width: 1rem;
+    height: 1rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Button Loading States */
+.hyperleap-btn .btn-spinner {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hyperleap-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .hyperleap-header-actions {
+        justify-content: center;
+    }
+    
+    .hyperleap-stats {
+        flex-direction: column;
+    }
+    
+    .hyperleap-form-row {
+        flex-direction: column;
+    }
+    
+    .hyperleap-form-actions {
+        flex-direction: column;
+    }
+    
+    .hyperleap-empty-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hyperleap-help-actions {
+        flex-direction: column;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --hyperleap-bg: #0f172a;
+        --hyperleap-surface: #1e293b;
+        --hyperleap-border: #334155;
+        --hyperleap-text: #f1f5f9;
+        --hyperleap-text-secondary: #94a3b8;
+    }
+}
