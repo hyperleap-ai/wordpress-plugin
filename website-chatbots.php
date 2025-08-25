@@ -23,7 +23,7 @@ define('HYPERLEAP_CHATBOTS_VERSION', '2.0.0');
 define('HYPERLEAP_CHATBOTS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('HYPERLEAP_CHATBOTS_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('HYPERLEAP_CHATBOTS_JS_URL', 'https://chatjs.hyperleap.ai/chatbot.min.js');
-define('HYPERLEAP_CHATBOTS_API_URL', 'https://api.hyperleap.ai');
+define('HYPERLEAP_CHATBOTS_API_URL', 'https://api.hyperleapai.com');
 
 function activate_hyperleap_chatbots() {
     require_once HYPERLEAP_CHATBOTS_PLUGIN_DIR . 'includes/class-hyperleap-chatbots-activator.php';
