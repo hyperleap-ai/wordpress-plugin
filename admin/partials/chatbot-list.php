@@ -32,7 +32,13 @@ if (!defined('WPINC')) {
         </div>
     </div>
 
-    <?php if (empty($chatbots)): ?>
+    <?php 
+    // Debug: Check the data structure
+    if (!empty($chatbots)) {
+        error_log('Hyperleap Chatbots Debug - Data structure: ' . print_r(array_keys(reset($chatbots)), true));
+    }
+    
+    if (empty($chatbots)): ?>
         <div class="hyperleap-empty-state">
             <div class="hyperleap-empty-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -55,7 +61,14 @@ if (!defined('WPINC')) {
     <?php else: ?>
         <div class="hyperleap-stats">
             <?php 
-            $active_count = count(array_filter($chatbots, function($bot) { return $bot['enabled']; }));
+            $active_count = count(array_filter($chatbots, function($bot) { 
+                // Handle both old and new data formats
+                if (isset($bot['enabled'])) {
+                    return $bot['enabled'];
+                } else {
+                    return isset($bot['status']) && $bot['status'] === 'active';
+                }
+            }));
             $total_count = count($chatbots);
             ?>
             <div class="hyperleap-stat">
@@ -69,24 +82,51 @@ if (!defined('WPINC')) {
         </div>
 
         <div class="hyperleap-chatbots-grid">
-            <?php foreach ($chatbots as $chatbot): ?>
-                <div class="hyperleap-chatbot-card <?php echo $chatbot['enabled'] ? 'active' : 'inactive'; ?>" 
+            <?php foreach ($chatbots as $chatbot): 
+                // Handle both old and new data formats
+                $is_enabled = false;
+                $chatbot_id = '';
+                $chatbot_name = '';
+                $placement = 'sitewide';
+                $pages = array();
+                $updated_at = '';
+                
+                // New format
+                if (isset($chatbot['enabled'])) {
+                    $is_enabled = $chatbot['enabled'];
+                    $chatbot_id = $chatbot['chatbot_id'] ?? '';
+                    $chatbot_name = $chatbot['name'] ?? 'Unnamed Chatbot';
+                    $placement = $chatbot['placement'] ?? 'sitewide';
+                    $pages = $chatbot['pages'] ?? array();
+                    $updated_at = $chatbot['updated_at'] ?? '';
+                } 
+                // Old format fallback
+                else {
+                    $is_enabled = isset($chatbot['status']) && $chatbot['status'] === 'active';
+                    $chatbot_id = $chatbot['chatbot_id'] ?? '';
+                    $chatbot_name = $chatbot['chatbot_name'] ?? 'Unnamed Chatbot';
+                    $placement = $chatbot['location'] === 'specific' ? 'specific' : 'sitewide';
+                    $pages = $chatbot['pages'] ?? array();
+                    $updated_at = date('Y-m-d H:i:s'); // Fallback to current time
+                }
+            ?>
+                <div class="hyperleap-chatbot-card <?php echo $is_enabled ? 'active' : 'inactive'; ?>" 
                      data-chatbot-id="<?php echo esc_attr($chatbot['id']); ?>">
                     
                     <div class="hyperleap-chatbot-header">
                         <div class="hyperleap-chatbot-status">
-                            <div class="hyperleap-status-indicator <?php echo $chatbot['enabled'] ? 'active' : 'inactive'; ?>"></div>
+                            <div class="hyperleap-status-indicator <?php echo $is_enabled ? 'active' : 'inactive'; ?>"></div>
                             <span class="hyperleap-status-text">
-                                <?php echo $chatbot['enabled'] ? __('Active', 'hyperleap-chatbots') : __('Inactive', 'hyperleap-chatbots'); ?>
+                                <?php echo $is_enabled ? __('Active', 'hyperleap-chatbots') : __('Inactive', 'hyperleap-chatbots'); ?>
                             </span>
                         </div>
                         
                         <div class="hyperleap-chatbot-actions">
                             <button class="hyperleap-btn-icon hyperleap-toggle-chatbot" 
                                     data-id="<?php echo esc_attr($chatbot['id']); ?>"
-                                    data-enabled="<?php echo $chatbot['enabled'] ? 'true' : 'false'; ?>"
-                                    title="<?php echo $chatbot['enabled'] ? __('Disable', 'hyperleap-chatbots') : __('Enable', 'hyperleap-chatbots'); ?>">
-                                <?php if ($chatbot['enabled']): ?>
+                                    data-enabled="<?php echo $is_enabled ? 'true' : 'false'; ?>"
+                                    title="<?php echo $is_enabled ? __('Disable', 'hyperleap-chatbots') : __('Enable', 'hyperleap-chatbots'); ?>">
+                                <?php if ($is_enabled): ?>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <rect x="6" y="4" width="4" height="16"/>
                                         <rect x="14" y="4" width="4" height="16"/>
@@ -120,24 +160,24 @@ if (!defined('WPINC')) {
                     </div>
                     
                     <div class="hyperleap-chatbot-content">
-                        <h3 class="hyperleap-chatbot-name"><?php echo esc_html($chatbot['name'] ?: __('Unnamed Chatbot', 'hyperleap-chatbots')); ?></h3>
-                        <div class="hyperleap-chatbot-id"><?php echo esc_html($chatbot['chatbot_id']); ?></div>
+                        <h3 class="hyperleap-chatbot-name"><?php echo esc_html($chatbot_name); ?></h3>
+                        <div class="hyperleap-chatbot-id"><?php echo esc_html($chatbot_id); ?></div>
                         
                         <div class="hyperleap-chatbot-placement">
-                            <span class="hyperleap-placement-badge hyperleap-placement-<?php echo esc_attr($chatbot['placement']); ?>">
+                            <span class="hyperleap-placement-badge hyperleap-placement-<?php echo esc_attr($placement); ?>">
                                 <?php
-                                switch ($chatbot['placement']) {
+                                switch ($placement) {
                                     case 'sitewide':
                                         _e('Site-wide', 'hyperleap-chatbots');
                                         break;
                                     case 'specific':
-                                        printf(_n('%d page', '%d pages', count($chatbot['pages']), 'hyperleap-chatbots'), count($chatbot['pages']));
+                                        printf(_n('%d page', '%d pages', count($pages), 'hyperleap-chatbots'), count($pages));
                                         break;
                                     case 'homepage':
                                         _e('Homepage only', 'hyperleap-chatbots');
                                         break;
                                     default:
-                                        echo esc_html($chatbot['placement']);
+                                        echo esc_html($placement);
                                 }
                                 ?>
                             </span>
@@ -146,8 +186,14 @@ if (!defined('WPINC')) {
                     
                     <div class="hyperleap-chatbot-footer">
                         <div class="hyperleap-chatbot-dates">
-                            <small><?php printf(__('Updated %s', 'hyperleap-chatbots'), 
-                                human_time_diff(strtotime($chatbot['updated_at']), current_time('timestamp')) . ' ' . __('ago', 'hyperleap-chatbots')); ?></small>
+                            <small><?php 
+                            if ($updated_at) {
+                                printf(__('Updated %s', 'hyperleap-chatbots'), 
+                                    human_time_diff(strtotime($updated_at), current_time('timestamp')) . ' ' . __('ago', 'hyperleap-chatbots'));
+                            } else {
+                                _e('Recently created', 'hyperleap-chatbots');
+                            }
+                            ?></small>
                         </div>
                     </div>
                 </div>
@@ -158,6 +204,14 @@ if (!defined('WPINC')) {
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
+    
+    // Debug: Check if hyperleapChatbots is loaded
+    if (typeof hyperleapChatbots === 'undefined') {
+        console.error('hyperleapChatbots object not found. AJAX will not work.');
+        return;
+    }
+    
+    console.log('Hyperleap Admin Script Loaded', hyperleapChatbots);
     
     $('.hyperleap-toggle-chatbot').on('click', function() {
         const button = $(this);

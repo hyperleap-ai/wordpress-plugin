@@ -40,24 +40,17 @@ class Hyperleap_Chatbots_Admin {
             return;
         }
 
+        // Main admin script with AJAX functionality
         wp_enqueue_script(
             $this->plugin_name . '-admin',
-            HYPERLEAP_CHATBOTS_PLUGIN_URL . 'assets/js/admin.js',
+            HYPERLEAP_CHATBOTS_PLUGIN_URL . 'assets/js/enhanced-admin.js',
             array('jquery'),
             $this->version,
             true
         );
 
-        // Enhanced admin JS
-        wp_enqueue_script(
-            $this->plugin_name . '-enhanced',
-            HYPERLEAP_CHATBOTS_PLUGIN_URL . 'assets/js/enhanced-admin.js',
-            array('jquery', $this->plugin_name . '-admin'),
-            $this->version,
-            true
-        );
-
-        wp_localize_script($this->plugin_name . '-enhanced', 'hyperleapChatbots', array(
+        // Localize the main script
+        wp_localize_script($this->plugin_name . '-admin', 'hyperleapChatbots', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('hyperleap_chatbots_nonce'),
             'api_url' => HYPERLEAP_CHATBOTS_API_URL,
